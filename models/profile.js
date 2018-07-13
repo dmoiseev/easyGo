@@ -58,13 +58,13 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       afterDestroy: (profile) => {
         sequelize.models.User
-          .findById(profile.UserId)
+          .findById(profile.userId)
           .then(value => value.destroy());
       },
     },
   });
   Profile.associate = (models) => {
-    Profile.belongsTo(models.User, { foreignKey: 'UserId' });
+    Profile.belongsTo(models.User, { foreignKey: 'userId' });
   };
   return Profile;
 };

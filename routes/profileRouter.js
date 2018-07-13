@@ -1,13 +1,17 @@
 const express = require('express');
 const controller = require('../controllers/profileController');
+const auth = require('../middlewares/checkAuthentication');
 
 const router = express.Router();
 
-router.route('/:id/profile')
-  .get(controller.getProfile)
-  .put(controller.updateProfile)
-  .delete(controller.removeProfile);
+router.route('/profile/password')
+  .get((req, res) => res.render('password'))
+  .post(controller.changePassword);
 
-router.put('/:id/profile/password', controller.changePassword);
+router.route('/:id/profile')
+  .get(auth, controller.getProfile)
+  .put(auth, controller.updateProfile)
+  .delete(auth, controller.removeProfile);
+
 
 module.exports = router;
