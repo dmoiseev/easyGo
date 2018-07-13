@@ -3,7 +3,6 @@ const validateBody = require('../services/validateBody');
 
 module.exports = {
   getProfile(req, res) {
-    console.log(req.user);
     const { id } = req.params;
 
     Profile.findOne({ where: { id }, include: [{ model: User, attributes: ['login', 'email'], required: true }] })
