@@ -10,14 +10,14 @@ module.exports = (sequelize, DataTypes) => {
     },
     firstName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       validate: {
         is: ['^[a-z]+$', 'i'],
       },
     },
     lastName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       validate: {
         is: ['^[a-z]+$', 'i'],
       },
@@ -33,7 +33,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        is: ['^[a-z]+$', 'i'],
+        city() {
+          if (this.city !== 'Kharkiv') {
+            throw new Error('This app is only for people from Kharkiv');
+          }
+        },
       },
     },
     country: {
@@ -47,7 +51,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        isIn: [['male', 'female']],
+        isIn: {
+          arg: ['male', 'female'],
+          msg: 'Must be male or female',
+        },
       },
     },
     birthday: DataTypes.DATEONLY,
@@ -74,6 +81,21 @@ module.exports = (sequelize, DataTypes) => {
         sequelize.models.User
           .findById(profile.userId)
           .then(value => value.destroy());
+      },
+      beforeValidate: (profile) => {
+        profile.firstName = 'Ringo';
+      },
+      afterValidate: (profile) => {
+        if (profile.country[0] !== profile.country[0].toUpperCase()) {
+          throw new Error('');
+        }
+      },
+    },
+    validate: {
+      FirstOrLastName() {
+        if ((this.firstName === null) && (this.lastName === null)) {
+          throw new Error('need input firstName or LastName');
+        }
       },
     },
   });
